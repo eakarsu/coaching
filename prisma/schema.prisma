@@ -130,3 +130,150 @@ model Stat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ==================== AI FEATURES ====================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  goals       Goal[]
+  habits      Habit[]
+  sessions    Session[]
+  decisions   Decision[]
+  homework    Homework[]
+  moods       Mood[]
+  predictions Prediction[]
+}
+
+model Goal {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  targetDate  DateTime?
+  progress    Int      @default(0)
+  status      String   @default("active")
+  priority    String   @default("medium")
+  aiInsights  String?
+  milestones  String[]
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Habit {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  frequency   String
+  category    String
+  streak      Int      @default(0)
+  bestStreak  Int      @default(0)
+  totalCount  Int      @default(0)
+  lastCompleted DateTime?
+  reminder    String?
+  status      String   @default("active")
+  aiSuggestions String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  title       String
+  duration    Int
+  notes       String
+  category    String
+  mood        String?
+  productivity Int?
+  keyTakeaways String[]
+  aiSummary   String?
+  actionItems String[]
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Decision {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  options     String[]
+  pros        String[]
+  cons        String[]
+  urgency     String   @default("medium")
+  importance  String   @default("medium")
+  status      String   @default("pending")
+  finalChoice String?
+  aiAnalysis  String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Homework {
+  id          String   @id @default(cuid())
+  subject     String
+  topic       String
+  gradeLevel  String
+  difficulty  String   @default("medium")
+  questions   String[]
+  answers     String[]
+  hints       String[]
+  explanation String?
+  aiGenerated Boolean  @default(true)
+  status      String   @default("active")
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Mood {
+  id          String   @id @default(cuid())
+  rating      Int
+  emotion     String
+  notes       String?
+  factors     String[]
+  activities  String[]
+  energy      Int?
+  stress      Int?
+  sleep       Int?
+  aiAnalysis  String?
+  suggestions String[]
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Prediction {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  scenario    String
+  factors     String[]
+  probability Int?
+  timeframe   String?
+  outcome     String?
+  confidence  String   @default("medium")
+  aiPrediction String?
+  actualResult String?
+  status      String   @default("pending")
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
