@@ -338,6 +338,49 @@ Return ONLY valid JSON: {"prediction": "...", "probability": 0, "confidence": "m
   };
 }
 
+// AI Weekly Coach Summary — aggregates user's recent moods, goals, and habits
+// into a single LLM-generated digest. Uses the same OpenRouter pattern as the
+// other helpers in this file.
+export async function generateCoachSummary(params: {
+  recentMoods: Array<{ rating: number; emotion: string; createdAt: string }>;
+  activeGoals: Array<{ title: string; progress: number; status: string }>;
+  activeHabits: Array<{ name: string; streak: number; bestStreak: number }>;
+  timeframeDays: number;
+}): Promise<{ summary: string; highlights: string[]; suggestions: string[] }> {
+  const messages: OpenRouterMessage[] = [
+    {
+      role: 'system',
+      content: 'You are a personal coach providing a concise weekly digest. Synthesize the user\'s mood, goal, and habit data into a supportive, actionable summary. Return ONLY valid JSON: {"summary": "...", "highlights": ["...","..."], "suggestions": ["...","...","..."]}.',
+    },
+    {
+      role: 'user',
+      content: `Generate a coach summary for the past ${params.timeframeDays} days.
+Recent moods (most recent first): ${JSON.stringify(params.recentMoods)}
+Active goals: ${JSON.stringify(params.activeGoals)}
+Active habits: ${JSON.stringify(params.activeHabits)}
+
+Return ONLY valid JSON: {"summary": "2-3 sentence digest", "highlights": ["wins from this week"], "suggestions": ["3 next steps"]}`,
+    },
+  ];
+
+  const response = await callOpenRouter(messages, 4000);
+
+  try {
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+  } catch {
+    console.error('Failed to parse coach summary response:', response);
+  }
+
+  return {
+    summary: response,
+    highlights: [],
+    suggestions: ['Review your goal progress', 'Reflect on your mood patterns', 'Celebrate any habit streaks'],
+  };
+}
+
 // AI Goal Setter - Help create SMART goals
 export async function suggestGoals(params: {
   category: string;

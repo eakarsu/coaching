@@ -20,6 +20,7 @@ const navItems = [
   { href: '/dashboard/goal-setter', label: 'Goal Setter', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   { href: '/dashboard/moods', label: 'Moods', icon: 'M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
   { href: '/dashboard/predictions', label: 'Predictions', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+  { href: '/dashboard/coach-summary', label: 'Coach Summary', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
 ];
 
 export default function DashboardLayout({
