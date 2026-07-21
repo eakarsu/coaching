@@ -7,6 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Local operator authentication is an explicit fallback for isolated installs.
+// Keeping these four tables in the Prisma schema makes `prisma db push` and the
+// reviewed SQL migrations converge on the same identity contract.
+model CoachingTenant {
+  id         String             @id @db.Uuid
+  name       String
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  identities CoachingIdentity[]
+
+  @@map("coaching_tenants")
+}
+
+model CoachingIdentity {
+  tenantId   String                    @map("tenant_id") @db.Uuid
+  subject    String
+  role       String
+  email      String?
+  active     Boolean                   @default(true)
+  createdAt  DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  tenant     CoachingTenant            @relation(fields: [tenantId], references: [id])
+  credential CoachingLocalCredential?
+  sessions   CoachingLocalSession[]
+
+  @@id([tenantId, subject])
+  @@map("coaching_identities")
+}
+
+model CoachingLocalCredential {
+  tenantId     String           @map("tenant_id") @db.Uuid
+  subject      String
+  passwordHash String           @map("password_hash")
+  identity     CoachingIdentity @relation(fields: [tenantId, subject], references: [tenantId, subject], onDelete: Cascade)
+
+  @@id([tenantId, subject])
+  @@map("coaching_local_credentials")
+}
+
+model CoachingLocalSession {
+  tokenHash  String           @id @map("token_hash")
+  tenantId   String           @map("tenant_id") @db.Uuid
+  subject    String
+  expiresAt  DateTime         @map("expires_at") @db.Timestamptz
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  lastSeenAt DateTime         @default(now()) @map("last_seen_at") @db.Timestamptz
+  identity   CoachingIdentity @relation(fields: [tenantId, subject], references: [tenantId, subject], onDelete: Cascade)
+
+  @@index([expiresAt], map: "coaching_local_sessions_expiry_idx")
+  @@map("coaching_local_sessions")
+}
+
 model Service {
   id          String   @id @default(cuid())
   title       String

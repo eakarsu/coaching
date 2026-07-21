@@ -3,6 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  if (process.env.DESTRUCTIVE_DEMO_SEED_ACKNOWLEDGEMENT !== 'replace-all-data-with-demo-fixtures') {
+    throw new Error('Refusing destructive demo seed without explicit acknowledgement');
+  }
+  const demoPassword = process.env.DEMO_SEED_PASSWORD || '';
+  if (demoPassword.length < 12) throw new Error('DEMO_SEED_PASSWORD must contain at least 12 characters');
   console.log('Seeding database...');
 
   // Clear existing data - AI Features first (due to foreign key constraints)
@@ -694,7 +699,7 @@ async function main() {
   const user1 = await prisma.user.create({
     data: {
       email: 'demo@example.com',
-      password: 'demo123',
+      password: demoPassword,
       name: 'Demo User',
     },
   });
@@ -702,7 +707,7 @@ async function main() {
   const user2 = await prisma.user.create({
     data: {
       email: 'john@example.com',
-      password: 'john123',
+      password: demoPassword,
       name: 'John Smith',
     },
   });

@@ -1,37 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Governed Coaching Platform
 
-## Getting Started
+The production workflow serves one primary user journey: a client selects an available coach, pays for an engagement, receives a provider-backed session, works from a coach-authored action plan, acknowledges the session, and records measurable evidence against goals.
 
-First, run the development server:
+## What is implemented
+
+- Short-lived RS256 organization identity with tenant-scoped `client`, `coach`, and `operator` roles.
+- Coach specialty/capacity control and idempotent paid engagement enrollment.
+- Durable billing charge/refund, video meeting, and notification jobs with retries, dead letters, signed webhook replay protection, and explicit recovery commands.
+- Scheduling conflict prevention, coach-only completion notes/action items, separate client acknowledgment/reflection, measurable goals, optimistic check-ins, and deterministic outcome summaries.
+- Append-only audit history, restore-drill evidence, safe migrations/startup, health check, non-root container, and CI.
+- A focused production dashboard. Legacy demo fixtures, plaintext login, generic AI, caller-supplied user IDs, generated gaps, and unscoped admin routes are quarantined by production proxy policy.
+
+## Verify
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm ci
+cp .env.example .env
+# Replace every placeholder and use a disposable PostgreSQL database.
+ALLOW_SCHEMA_MIGRATION=1 ./start.sh migrate
+./start.sh check
+TEST_DATABASE_URL=postgres:///coaching_test npm test
+npm run build
+./start.sh start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The real HTTP/PostgreSQL test applies the migration twice and covers tenant and role isolation, coach capacity, duplicate enrollment, payment failure/retry, scheduling collision, video failure/retry, notification delivery, goal concurrency, deterministic progress evidence, action-plan acknowledgment, refund, webhook replay, restore evidence, and audit immutability.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# coaching
+See [RUNBOOK.md](RUNBOOK.md) for release, privacy, provider recovery, backup/restore, incident response, and external dependencies.
