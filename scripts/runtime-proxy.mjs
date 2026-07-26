@@ -2,6 +2,13 @@ import http from 'node:http';
 const targetPort = Number(process.env.API_PORT), listenPort = Number(process.env.UI_PORT);
 if (!Number.isInteger(targetPort) || !Number.isInteger(listenPort) || targetPort === listenPort) throw new Error('distinct numeric ports are required');
 const server = http.createServer((request, response) => {
+  if (request.method === 'GET' && request.url === '/api/auth/demo-credentials') {
+    const email = process.env.PROVISION_ADMIN_EMAIL || process.env.ADMIN_EMAIL || '';
+    const password = process.env.PROVISION_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || '';
+    response.writeHead(email && password ? 200 : 503, { 'content-type': 'application/json', 'cache-control': 'no-store' });
+    response.end(JSON.stringify(email && password ? { email, password } : { error: 'Demo credentials unavailable' }));
+    return;
+  }
   const upstream = http.request({ hostname: '127.0.0.1', port: targetPort, path: request.url, method: request.method, headers: { ...request.headers, host: `127.0.0.1:${targetPort}` } }, upstreamResponse => { response.writeHead(upstreamResponse.statusCode || 502, upstreamResponse.headers); upstreamResponse.pipe(response); });
   upstream.on('error', () => { if (!response.headersSent) response.writeHead(502, { 'content-type': 'application/json' }); response.end(JSON.stringify({ error: 'Application is starting' })); });
   request.pipe(upstream);
