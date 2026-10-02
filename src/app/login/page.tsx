@@ -12,7 +12,8 @@ export default function Login() {
     if (!response.ok) return setError('Demo credentials are unavailable.');
     const credentials = await response.json();
     setEmail(credentials.email);
-    setPassword(credentials.password);
+    setPassword(credentials.password)
+      window.setTimeout(() => { const __f = document.querySelector('form'); if (__f) __f.requestSubmit(); }, 60);;
     const __login = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: credentials.email, password: credentials.password }) });
     if (!__login.ok) { setError('Invalid email or password'); return; }
     window.location.assign('/');
