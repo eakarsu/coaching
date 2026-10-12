@@ -43,16 +43,18 @@ export default function PredictionsPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'Product launch', values: {
       title: 'Will our product launch meet the Q2 deadline?',
       description: 'We have a major product launch planned for end of Q2. The team has been working on it for 3 months and we are about 70% complete.',
       category: 'Business',
       scenario: 'The remaining 30% includes payment integration, user onboarding flow, and performance optimization. We have 6 weeks left and 4 developers available full-time.',
       factors: ['Team velocity has been consistent', 'Payment API has known complexity', 'QA testing needs 2 weeks', 'No major blockers currently'],
       timeframe: '6 weeks'
-    });
-  };
+    } },
+    { label: 'Training milestone', values: {title:'Will the team finish the training plan this quarter?',description:'A small team has a defined training plan and weekly study blocks.',category:'Education',scenario:'Four participants need to finish six modules in eight weeks; two modules are complete.',factors:['Weekly study time is reserved','Mentor reviews are available','Holiday absence may reduce capacity'],timeframe:'8 weeks'} },
+    { label: 'Community event', values: {title:'Will the community event reach its registration target?',description:'A local event has a registration target of 60 attendees.',category:'Personal',scenario:'Twenty registrations are confirmed with four weeks remaining and two outreach channels planned.',factors:['Partner newsletter is scheduled','Venue capacity is confirmed','Weather may affect attendance'],timeframe:'4 weeks'} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -286,15 +288,7 @@ export default function PredictionsPage() {
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Prediction' : 'New Prediction'}</h2>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <button
-                      onClick={fillSampleData}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Load Sample
-                    </button>
+                    <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   )}
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

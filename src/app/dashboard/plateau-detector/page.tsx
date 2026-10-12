@@ -4,7 +4,12 @@ import { useState } from 'react';
 
 export default function PlateauDetectorPage() {
   const [form, setForm] = useState({ goalProgressDelta: 3, missedHabits: 4, sessionsSinceBreakthrough: 5, moodTrend: -2 });
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ level: string; score: number; actions: string[] } | null>(null);
+  const examples = [
+    { label: 'Early warning', values: { goalProgressDelta: 3, missedHabits: 4, sessionsSinceBreakthrough: 5, moodTrend: -2 } },
+    { label: 'Steady progress', values: { goalProgressDelta: 18, missedHabits: 1, sessionsSinceBreakthrough: 1, moodTrend: 2 } },
+    { label: 'Needs review', values: { goalProgressDelta: 0, missedHabits: 7, sessionsSinceBreakthrough: 8, moodTrend: -4 } },
+  ];
 
   const submit = async () => {
     const response = await fetch('/api/ai/plateau-detector', {
@@ -19,6 +24,7 @@ export default function PlateauDetectorPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-white">Coaching Plateau Detector</h1>
       <div className="rounded-xl border border-white/10 bg-white/5 p-6 space-y-4">
+        <div className="flex flex-wrap gap-2">{examples.map(example => <button key={example.label} type="button" onClick={() => setForm(example.values)} className="rounded border border-purple-400 px-3 py-2 text-sm text-purple-100">{example.label}</button>)}</div>
         {Object.entries(form).map(([key, value]) => (
           <label key={key} className="block text-sm text-gray-200">
             {key.replace(/([A-Z])/g, ' $1')}

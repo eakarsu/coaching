@@ -41,15 +41,17 @@ export default function HomeworkPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'Quadratic equations', values: {
       subject: 'Mathematics',
       topic: 'Quadratic Equations',
       gradeLevel: 'High School',
       difficulty: 'medium',
       numberOfQuestions: 5
-    });
-  };
+    } },
+    { label: 'Biology practice', values: {subject:'Biology',topic:'Cell structure and organelle functions',gradeLevel:'High School',difficulty:'medium',numberOfQuestions:6} },
+    { label: 'Reading analysis', values: {subject:'English',topic:'Identifying theme and supporting evidence in a short story',gradeLevel:'Middle School',difficulty:'easy',numberOfQuestions:4} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -234,15 +236,7 @@ export default function HomeworkPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Homework' : 'Generate Homework'}</h2>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={fillSampleData}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Load Sample
-                  </button>
+                  <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

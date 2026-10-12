@@ -29,13 +29,11 @@ export default function GoalSetterPage() {
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
-      category: 'Education',
-      interests: 'programming, TypeScript, open source',
-      timeframe: '3 months'
-    });
-  };
+  const examples = [
+    { label: 'Learning plan', category: 'Education', interests: 'TypeScript, accessible web development, open source', timeframe: '3 months' },
+    { label: 'Career growth', category: 'Career', interests: 'mentoring junior colleagues, project leadership, public speaking', timeframe: '6 months' },
+    { label: 'Wellness routine', category: 'Health', interests: 'walking, meal planning, consistent sleep', timeframe: '1 month' },
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -178,15 +176,7 @@ export default function GoalSetterPage() {
       <div className="bg-white/5 backdrop-blur rounded-2xl border border-white/10 p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Tell us about your goals</h2>
-          <button
-            onClick={fillSampleData}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Load Sample
-          </button>
+          <div className="flex flex-wrap gap-2">{examples.map(example => <button key={example.label} type="button" disabled={loading} onClick={() => setFormData({ category: example.category, interests: example.interests, timeframe: example.timeframe })} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{example.label}</button>)}</div>
         </div>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

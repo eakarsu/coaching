@@ -41,15 +41,17 @@ export default function HabitsPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'Morning meditation', values: {
       name: 'Morning Meditation',
       description: 'Practice 15 minutes of mindful meditation every morning before starting work to improve focus and reduce stress.',
       frequency: 'daily',
       category: 'Wellness',
       reminder: '7:00 AM'
-    });
-  };
+    } },
+    { label: 'Evening reading', values: {name:'Evening Reading',description:'Read for 20 minutes before bed on weekdays and note one useful idea.',frequency:'daily',category:'Learning',reminder:'8:30 PM'} },
+    { label: 'Weekly planning', values: {name:'Weekly Planning',description:'Review the coming week, choose three priorities, and reserve time for them.',frequency:'weekly',category:'Productivity',reminder:'Sunday 5:00 PM'} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -270,15 +272,7 @@ export default function HabitsPage() {
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Habit' : 'Create New Habit'}</h2>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <button
-                      onClick={fillSampleData}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Load Sample
-                    </button>
+                    <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   )}
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

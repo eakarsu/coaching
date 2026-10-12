@@ -86,6 +86,12 @@ export default function CoachSummaryPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Choose your timeframe</h2>
         </div>
+        <div className="mb-4 flex flex-wrap gap-2">{[
+          { label: 'Weekly review', days: 7 },
+          { label: 'Two-week review', days: 14 },
+          { label: 'Monthly review', days: 30 },
+        ].map(example => <button key={example.days} type="button" disabled={loading} onClick={() => setTimeframeDays(example.days)} className="rounded-lg border border-amber-400 px-3 py-2 text-sm text-amber-200 disabled:opacity-50">{example.label}</button>)}</div>
+        {!user && <p className="mb-4 text-sm text-amber-200">Sign in to use your own mood, goal, and habit records. Examples only set the timeframe.</p>}
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Timeframe</label>

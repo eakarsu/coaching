@@ -44,8 +44,8 @@ export default function DecisionsPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'Architecture choice', values: {
       title: 'Should I switch to a microservices architecture?',
       description: 'Our monolithic app is growing and we are experiencing deployment bottlenecks. Considering breaking it into microservices for better scalability and team independence.',
       category: 'Career',
@@ -54,8 +54,10 @@ export default function DecisionsPage() {
       cons: ['Added complexity', 'Network latency', 'Harder debugging'],
       urgency: 'medium',
       importance: 'high'
-    });
-  };
+    } },
+    { label: 'Training budget', values: {title:'Choose a professional development course',description:'Compare available courses against team learning goals and the current training budget.',category:'Career',options:['Self-paced course','Instructor-led workshop','Internal study group'],pros:['Flexible schedule','Live feedback','Low cost'],cons:['Less structure','Higher cost','Limited external perspective'],urgency:'low',importance:'medium'} },
+    { label: 'Work schedule', values: {title:'Choose a team collaboration schedule',description:'The team needs predictable focus time and shared hours for reviews.',category:'Career',options:['Shared morning hours','Two collaboration days','Flexible hours with weekly review'],pros:['Easy to schedule','Clear meeting windows','More autonomy'],cons:['Time zone friction','Less flexibility','Requires coordination'],urgency:'medium',importance:'high'} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -281,15 +283,7 @@ export default function DecisionsPage() {
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Decision' : 'New Decision'}</h2>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <button
-                      onClick={fillSampleData}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Load Sample
-                    </button>
+                    <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   )}
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

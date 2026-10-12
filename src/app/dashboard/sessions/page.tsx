@@ -42,8 +42,8 @@ export default function SessionsPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'API refactoring', values: {
       title: 'Deep Work: API Refactoring',
       duration: 90,
       notes: 'Spent 90 minutes refactoring the REST API layer to use a cleaner repository pattern. Removed duplicated database queries and added proper error handling. Also wrote integration tests for the main endpoints.',
@@ -52,8 +52,10 @@ export default function SessionsPage() {
       productivity: 8,
       keyTakeaways: ['Repository pattern simplifies testing', 'Error boundaries catch unexpected failures'],
       actionItems: ['Review remaining endpoints', 'Add rate limiting']
-    });
-  };
+    } },
+    { label: 'Career coaching', values: {title:'Career coaching check-in',duration:45,notes:'Discussed current responsibilities, a possible mentoring role, and questions to clarify with the manager.',category:'Personal',mood:'Reflective',productivity:7,keyTakeaways:['Clarify expectations for mentoring','Identify one growth opportunity'],actionItems:['Draft questions for manager','Schedule a follow-up conversation']} },
+    { label: 'Wellness review', values: {title:'Weekly wellness review',duration:30,notes:'Reviewed sleep, walking consistency, and upcoming schedule constraints.',category:'Personal',mood:'Calm',productivity:6,keyTakeaways:['Short walks were easier to sustain','Evening schedule is crowded'],actionItems:['Plan morning walks','Review routine next week']} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -256,15 +258,7 @@ export default function SessionsPage() {
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Session' : 'Log New Session'}</h2>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <button
-                      onClick={fillSampleData}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Load Sample
-                    </button>
+                    <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   )}
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

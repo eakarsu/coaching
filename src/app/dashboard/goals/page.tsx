@@ -40,16 +40,18 @@ export default function GoalsPage() {
   });
   const [saving, setSaving] = useState(false);
 
-  const fillSampleData = () => {
-    setFormData({
+  const samplePresets = [
+    { label: 'TypeScript learning', values: {
       title: 'Learn TypeScript Advanced Patterns',
       description: 'Master advanced TypeScript patterns including generics, conditional types, mapped types, and template literal types to write more type-safe code.',
       category: 'Education',
       targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       priority: 'high',
       milestones: ['Complete generics chapter', 'Build a type-safe API client', 'Contribute to a typed OSS project']
-    });
-  };
+    } },
+    { label: 'Walking routine', values: {title:'Build a sustainable walking routine',description:'Walk for 25 minutes on four days each week and review the routine monthly.',category:'Health',targetDate:new Date(Date.now()+60*86400000).toISOString().split('T')[0],priority:'medium',milestones:['Choose four walking days','Track walks for four weeks','Review energy and adjust schedule']} },
+    { label: 'Savings plan', values: {title:'Create a monthly savings plan',description:'Review recurring expenses and set an achievable monthly savings target.',category:'Finance',targetDate:new Date(Date.now()+90*86400000).toISOString().split('T')[0],priority:'high',milestones:['List recurring expenses','Set savings target','Review spending after one month']} }
+  ];
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -285,15 +287,7 @@ export default function GoalsPage() {
                 <h2 className="text-xl font-bold text-white">{isEditing ? 'Edit Goal' : 'Create New Goal'}</h2>
                 <div className="flex items-center gap-2">
                   {!isEditing && (
-                    <button
-                      onClick={fillSampleData}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Load Sample
-                    </button>
+                    <div className="flex flex-wrap gap-2">{samplePresets.map(preset => <button key={preset.label} type="button" disabled={saving} onClick={() => setFormData(preset.values)} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">{preset.label}</button>)}</div>
                   )}
                   <button onClick={closeModal} className="text-gray-400 hover:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
